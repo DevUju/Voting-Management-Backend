@@ -1,0 +1,236 @@
+# Backend - Poll & Voting System API
+
+NestJS backend for the Poll & Voting System application.
+
+## 📋 Prerequisites
+
+- Node.js (v18+)
+- PostgreSQL (v12+)
+- npm
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+```bash
+npm install
+```
+
+### 2. Configure Environment
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your PostgreSQL credentials:
+```env
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=your_password
+DATABASE_NAME=poll_voting_db
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRATION=3600
+APP_PORT=3000
+FRONTEND_URL=http://localhost:4200
+```
+
+### 3. Start Development Server
+```bash
+npm run start:dev
+```
+
+Server runs on http://localhost:3000
+
+## 📚 Project Structure
+
+```
+src/
+├── entities/           # Database entities (User, Poll, PollOption, Vote)
+├── dto/               # Data Transfer Objects for validation
+├── services/          # Business logic (Auth, Poll, Vote services)
+├── controllers/       # API endpoints (Auth, Poll, Vote controllers)
+├── guards/            # Authentication guards (JWT, Admin)
+├── config/            # Database configuration
+├── app.module.ts      # Root module
+└── main.ts           # Entry point
+```
+
+## 🔌 API Endpoints
+
+### Authentication (`/api/auth`)
+```
+POST   /signup              - Register new user
+POST   /login               - Login user
+GET    /profile             - Get current user profile (requires auth)
+```
+
+### Polls (`/api/polls`)
+```
+POST   /                    - Create poll (admin only)
+GET    /                    - Get all polls
+GET    /active              - Get active polls
+GET    /:id                 - Get poll by ID
+PATCH  /:id                 - Update poll (admin only)
+DELETE /:id                 - Delete poll (admin only)
+PATCH  /:id/close           - Close poll (admin only)
+```
+
+### Votes (`/api/votes`)
+```
+POST   /                    - Submit a vote
+GET    /poll/:pollId        - Get votes for a poll
+GET    /poll/:pollId/results           - Get poll results
+GET    /poll/:pollId/results/by-state?state=STATE - Results by state
+GET    /user/:userId/poll/:pollId     - Check user's vote on poll
+```
+
+## 🗄️ Database Setup
+
+The backend automatically creates tables on startup using TypeORM synchronization. Ensure PostgreSQL is running:
+
+```bash
+# Create database
+psql -U postgres -c "CREATE DATABASE poll_voting_db;"
+```
+
+## 📦 Available Scripts
+
+```bash
+npm run start        # Start production server
+npm run start:dev    # Start development server with watch
+npm run build        # Build for production
+npm run test         # Run tests
+npm run lint         # Run linter
+```
+
+## 🔐 Authentication
+
+- **Method**: JWT (Bearer Token)
+- **Location**: Authorization header
+- **Format**: `Bearer <token>`
+- **Expiration**: Configurable via JWT_EXPIRATION
+
+Example request with auth:
+```bash
+curl -H "Authorization: Bearer your_token_here" http://localhost:3000/api/auth/profile
+```
+
+## 🛡️ Security Features
+
+- Password hashing with bcrypt (10 salt rounds)
+- JWT token-based authentication
+- Admin role-based access control
+- Input validation with class-validator
+- CORS protection
+- SQL injection prevention via TypeORM
+
+## 🧪 Testing
+
+```bash
+npm run test         # Unit tests
+npm run test:e2e     # E2E tests
+npm run test:cov     # Coverage report
+```
+
+## 📖 Database Entities
+
+### User
+```typescript
+{
+  id: UUID,
+  name: string,
+  email: string (unique),
+  password: string (hashed),
+  state: string,
+  role: 'admin' | 'user',
+  createdAt: datetime,
+  updatedAt: datetime
+}
+```
+
+### Poll
+```typescript
+{
+  id: UUID,
+  title: string,
+  description: string,
+  status: 'active' | 'closed',
+  createdBy: UUID,
+  createdAt: datetime,
+  updatedAt: datetime,
+  options: PollOption[],
+  votes: Vote[]
+}
+```
+
+### PollOption
+```typescript
+{
+  id: UUID,
+  pollId: UUID,
+  optionText: string,
+  createdAt: datetime,
+  votes: Vote[]
+}
+```
+
+### Vote
+```typescript
+{
+  id: UUID,
+  userId: UUID,
+  pollId: UUID,
+  optionId: UUID,
+  state: string,
+  createdAt: datetime
+}
+```
+
+## 🚨 Error Handling
+
+The API returns standardized error responses:
+
+```json
+{
+  "statusCode": 400,
+  "message": "Error message here",
+  "error": "Bad Request"
+}
+```
+
+## 📝 Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| DATABASE_HOST | PostgreSQL host | localhost |
+| DATABASE_PORT | PostgreSQL port | 5432 |
+| DATABASE_USER | Database user | postgres |
+| DATABASE_PASSWORD | Database password | postgres |
+| DATABASE_NAME | Database name | poll_voting_db |
+| JWT_SECRET | Secret for signing tokens | change_in_production |
+| JWT_EXPIRATION | Token expiration (seconds) | 3600 |
+| APP_PORT | Server port | 3000 |
+| FRONTEND_URL | Frontend URL for CORS | http://localhost:4200 |
+
+## 🔄 Data Flow
+
+1. User registers/logs in → JWT token issued
+2. User includes token in requests → JWT guard validates
+3. Admin creates poll → Stored in database
+4. User votes → Vote recorded with user state
+5. Results requested → Aggregated vote counts returned
+6. Results filtered by state → State-specific counts returned
+
+## 🤝 Contributing
+
+1. Create feature branch: `git checkout -b feature/name`
+2. Make changes and commit: `git commit -am 'Add feature'`
+3. Push to branch: `git push origin feature/name`
+4. Submit pull request
+
+## 📧 Support
+
+For issues or questions, open an issue on the repository.
+
+---
+
+**Built with NestJS & TypeORM** 🚀
