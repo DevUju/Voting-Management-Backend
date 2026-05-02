@@ -1,8 +1,11 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Vote } from '../entities/vote.entity';
-import { CreateVoteDto, VoteResponseDto } from '../dto/vote.dto';
+import {
+  Injectable,
+  BadRequestException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Vote } from "./vote.entity";
+import { CreateVoteDto, VoteResponseDto } from "./vote.dto";
 
 export interface VoteResult {
   optionId: string;
@@ -20,22 +23,26 @@ export class VoteService {
     private votesRepository: Repository<Vote>,
   ) {}
 
-  async createVote(createVoteDto: CreateVoteDto, userId: string, state: string): Promise<VoteResponseDto> {
+  async createVote(
+    createVoteDto: CreateVoteDto,
+    userId: string,
+    state: string,
+  ): Promise<VoteResponseDto> {
     const { pollId, optionId } = createVoteDto;
 
     // Check if user already voted on this poll
     const existingVote = await this.votesRepository.findOne({
-      where: { userId, pollId },
+      where: { user: { id: userId }, poll: { id: pollId } },
     });
 
     if (existingVote) {
-      throw new BadRequestException('You have already voted on this poll');
+      throw new BadRequestException("You have already voted on this poll");
     }
 
     const vote = this.votesRepository.create({
-      userId,
-      pollId,
-      optionId,
+      user: { id: userId },
+      poll: { id: pollId },
+      option: { id: optionId },
       state,
     });
 
@@ -45,16 +52,16 @@ export class VoteService {
 
   async getVotesByPoll(pollId: string): Promise<Vote[]> {
     return this.votesRepository.find({
-      where: { pollId },
-      relations: ['option'],
+      where: { poll: { id: pollId } },
+      relations: ["option"],
     });
   }
 
   async getPollResults(pollId: string): Promise<VoteResult[]> {
     const votes = await this.votesRepository
-      .createQueryBuilder('vote')
-      .leftJoinAndSelect('vote.option', 'option')
-      .where('vote.pollId = :pollId', { pollId })
+      .createQueryBuilder("vote")
+      .leftJoinAndSelect("vote.option", "option")
+      .where("vote.pollId = :pollId", { pollId })
       .getMany();
 
     if (votes.length === 0) {
@@ -64,11 +71,11 @@ export class VoteService {
     const resultsMap = new Map<string, VoteResult>();
 
     votes.forEach((vote) => {
-      const optionId = vote.optionId;
+      const optionId = vote.option?.id;
       if (!resultsMap.has(optionId)) {
         resultsMap.set(optionId, {
           optionId,
-          optionText: vote.option?.optionText || '',
+          optionText: vote.option?.optionText || "",
           totalVotes: 0,
           stateBreakdown: {},
         });
@@ -76,13 +83,17 @@ export class VoteService {
 
       const result = resultsMap.get(optionId);
       result.totalVotes++;
-      result.stateBreakdown[vote.state] = (result.stateBreakdown[vote.state] || 0) + 1;
+      result.stateBreakdown[vote.state] =
+        (result.stateBreakdown[vote.state] || 0) + 1;
     });
 
     return Array.from(resultsMap.values());
   }
 
-  async getPollResultsByState(pollId: string, state: string): Promise<VoteResult[]> {
+  async getPollResultsByState(
+    pollId: string,
+    state: string,
+  ): Promise<VoteResult[]> {
     const allResults = await this.getPollResults(pollId);
     return allResults.map((result) => ({
       ...result,
@@ -91,9 +102,12 @@ export class VoteService {
     }));
   }
 
-  async getUserVoteOnPoll(userId: string, pollId: string): Promise<VoteResponseDto | null> {
+  async getUserVoteOnPoll(
+    userId: string,
+    pollId: string,
+  ): Promise<VoteResponseDto | null> {
     const vote = await this.votesRepository.findOne({
-      where: { userId, pollId },
+      where: { user: { id: userId }, poll: { id: pollId } },
     });
     return vote ? this.mapVoteToResponse(vote) : null;
   }
@@ -101,9 +115,9 @@ export class VoteService {
   private mapVoteToResponse(vote: Vote): VoteResponseDto {
     return {
       id: vote.id,
-      userId: vote.userId,
-      pollId: vote.pollId,
-      optionId: vote.optionId,
+      userId: vote.user.id,
+      pollId: vote.poll.id,
+      optionId: vote.option.id,
       state: vote.state,
       createdAt: vote.createdAt,
     };

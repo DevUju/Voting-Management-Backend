@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { User } from './users/user.entity';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 
@@ -35,21 +35,33 @@ async function seedAdminUser(app: any) {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Seed admin user
   await seedAdminUser(app);
 
-  // Enable CORS for frontend
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:4200',
     credentials: true,
   });
 
-  // Global validation pipe
   app.useGlobalPipes(new ValidationPipe());
 
-  const port = process.env.APP_PORT || 3000;
-  await app.listen(port);
-  console.log(`Poll & Voting Backend running on http://localhost:${port}`);
+  app.setGlobalPrefix('api/v1');
+
+  const configuredPort = parseInt(process.env.APP_PORT ?? '3000', 10);
+  const port = Number.isNaN(configuredPort) ? 3000 : configuredPort;
+
+  try {
+    await app.listen(port);
+    console.log(`Poll & Voting Backend running on http://localhost:${port}`);
+  } catch (error) {
+    if ((error as any)?.code === 'EADDRINUSE') {
+      const fallbackPort = port + 1;
+      console.warn(`Port ${port} is already in use. Trying port ${fallbackPort}...`);
+      await app.listen(fallbackPort);
+      console.log(`Poll & Voting Backend running on http://localhost:${fallbackPort}`);
+    } else {
+      throw error;
+    }
+  }
 }
 
 bootstrap();

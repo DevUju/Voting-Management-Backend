@@ -1,9 +1,9 @@
 import { Controller, Post, Get, Body, UseGuards, Request, BadRequestException, HttpCode, HttpStatus } from '@nestjs/common';
-import { AuthService } from '../services/auth.service';
-import { SignUpDto, LoginDto, AuthResponseDto, UserResponseDto } from '../dto/auth.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { AuthService } from '../auth/auth.service';
+import { SignUpDto, LoginDto, AuthResponseDto, UserResponseDto } from './auth.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

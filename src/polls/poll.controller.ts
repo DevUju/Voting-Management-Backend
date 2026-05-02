@@ -1,8 +1,8 @@
 import { Controller, Post, Get, Patch, Delete, Body, Param, UseGuards, Request, BadRequestException } from '@nestjs/common';
-import { PollService } from '../services/poll.service';
-import { CreatePollDto, UpdatePollDto, PollResponseDto } from '../dto/poll.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { AdminGuard } from '../guards/admin.guard';
+import { PollService } from '../polls/poll.service';
+import { CreatePollDto, UpdatePollDto, PollResponseDto } from './poll.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 
 @Controller('api/polls')
 export class PollController {

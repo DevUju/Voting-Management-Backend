@@ -1,40 +1,48 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
-import * as dotenv from 'dotenv';
-
-import { User } from './entities/user.entity';
-import { Poll } from './entities/poll.entity';
-import { PollOption } from './entities/poll-option.entity';
-import { Vote } from './entities/vote.entity';
-
-import { AuthService } from './services/auth.service';
-import { PollService } from './services/poll.service';
-import { VoteService } from './services/vote.service';
-
-import { AuthController } from './controllers/auth.controller';
-import { PollController } from './controllers/poll.controller';
-import { VoteController } from './controllers/vote.controller';
-
-import { databaseConfig } from './config/database.config';
-
-dotenv.config();
+import { AuthModule } from './auth/auth.module';
+import { PollOptionsModule } from './poll-options/poll-options.module';
+import { PollsModule } from './polls/polls.module';
+import { VotesModule } from './votes/votes.module';
+import { UsersModule } from './users/users.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { JwtService } from '@nestjs/jwt';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot(databaseConfig),
-    TypeOrmModule.forFeature([User, Poll, PollOption, Vote]),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'your_jwt_secret_key_here_change_in_production',
-      signOptions: { expiresIn: parseInt(process.env.JWT_EXPIRATION || '3600') },
+
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        logging: true,
+      }),
+      inject: [ConfigService],
     }),
+    AuthModule,
+    UsersModule,
+    VotesModule,
+    PollsModule,
+    PollOptionsModule,
   ],
-  controllers: [AuthController, PollController, VoteController],
-  providers: [AuthService, PollService, VoteService],
+  // providers: [
+  //   {
+  //     provide: APP_GUARD,
+  //     useClass: JwtAuthGuard,
+  //   },
+  // ],
 })
 export class AppModule {}

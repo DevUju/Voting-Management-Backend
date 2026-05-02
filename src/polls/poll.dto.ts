@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsArray, ArrayMinSize, ArrayMaxSize, IsOptional, IsEnum } from 'class-validator';
-import { PollStatus } from '../entities/poll.entity';
+import { PollStatus } from './poll.entity';
 
 export class CreatePollDto {
   @IsNotEmpty()

@@ -1,9 +1,9 @@
 import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Poll, PollStatus } from '../entities/poll.entity';
-import { PollOption } from '../entities/poll-option.entity';
-import { CreatePollDto, UpdatePollDto, PollResponseDto } from '../dto/poll.dto';
+import { Poll, PollStatus } from './poll.entity';
+import { PollOption } from '../poll-options/poll-option.entity';
+import { CreatePollDto, UpdatePollDto, PollResponseDto } from './poll.dto';
 
 @Injectable()
 export class PollService {

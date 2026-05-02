@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User } from '../users/user.entity';
 import * as bcrypt from 'bcrypt';
 
 async function seed() {

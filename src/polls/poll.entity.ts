@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn, ForeignKey } from 'typeorm';
-import { User } from './user.entity';
-import { PollOption } from './poll-option.entity';
-import { Vote } from './vote.entity';
+import { User } from '../users/user.entity';
+import { PollOption } from '../poll-options/poll-option.entity';
+import { Vote } from '../votes/vote.entity';
 
 export enum PollStatus {
   ACTIVE = 'active',
