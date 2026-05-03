@@ -26,8 +26,8 @@ export class VoteController {
   ): Promise<VoteResponseDto> {
     return this.voteService.createVote(
       createVoteDto,
-      "test-user-id",
-      "test-state",
+      req.user.sub,
+      req.user.state,
     );
   }
 
@@ -51,7 +51,7 @@ export class VoteController {
 
   @UseGuards(JwtAuthGuard)
   @Get("poll/:pollId/me")
-  async getUserVote(@Param("pollId") pollId: string, @Req() req: Request) {
-    return this.voteService.getUserVoteOnPoll("test-user-id", pollId);
+  async getUserVote(@Param("pollId") pollId: string, @Req() req: AuthenticatedRequest) {
+    return this.voteService.getUserVoteOnPoll(req.user.sub, pollId);
   }
 }

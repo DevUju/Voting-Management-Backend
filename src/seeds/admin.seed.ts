@@ -43,7 +43,7 @@ async function seed() {
       console.log('\n📝 Use these credentials to login at http://localhost:4200/login');
     }
   } catch (error) {
-    console.error('❌ Error creating admin user:', error.message);
+    console.error('❌ Error creating admin user:', error);
   } finally {
     await app.close();
   }

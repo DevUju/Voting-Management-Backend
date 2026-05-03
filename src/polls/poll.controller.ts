@@ -4,7 +4,7 @@ import { CreatePollDto, UpdatePollDto, PollResponseDto } from './poll.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 
-@Controller('api/polls')
+@Controller('polls')
 export class PollController {
   constructor(private pollService: PollService) {}
 
