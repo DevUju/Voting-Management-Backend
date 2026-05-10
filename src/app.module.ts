@@ -39,11 +39,5 @@ import { AuthService } from './auth/auth.service';
     PollsModule,
     PollOptionsModule,
   ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-  ],
 })
 export class AppModule {}

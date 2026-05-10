@@ -15,7 +15,6 @@ async function seed() {
     const adminName = 'Admin User';
     const adminState = 'Lagos';
 
-    // Check if admin already exists
     const existingAdmin = await usersRepository.findOne({ where: { email: adminEmail } });
 
     if (existingAdmin) {
