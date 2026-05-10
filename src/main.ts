@@ -38,7 +38,7 @@ async function bootstrap() {
   await seedAdminUser(app);
 
   app.enableCors({
-    origin: [process.env.FRONTEND_URL, 'http://localhost:4200'],
+    origin: ['https://dulcet-dragon-9e52bc.netlify.app/', 'http://localhost:4200'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
