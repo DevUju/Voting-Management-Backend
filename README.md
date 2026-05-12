@@ -2,13 +2,13 @@
 
 NestJS backend for the Poll & Voting System application.
 
-## 📋 Prerequisites
+##  Prerequisites
 
 - Node.js (v18+)
 - PostgreSQL (v12+)
 - npm
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Install Dependencies
 ```bash
@@ -40,21 +40,55 @@ npm run start:dev
 
 Server runs on http://localhost:3000
 
-## 📚 Project Structure
+##  Project Structure
 
 ```
 src/
-├── entities/           # Database entities (User, Poll, PollOption, Vote)
-├── dto/               # Data Transfer Objects for validation
-├── services/          # Business logic (Auth, Poll, Vote services)
-├── controllers/       # API endpoints (Auth, Poll, Vote controllers)
-├── guards/            # Authentication guards (JWT, Admin)
-├── config/            # Database configuration
-├── app.module.ts      # Root module
-└── main.ts           # Entry point
+├── auth/                   # Authentication module (signup, login, JWT)
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   ├── auth.module.ts
+│   ├── auth.dto.ts
+│   └── guards/             # Authentication & authorization guards
+│       ├── jwt-auth.guard.ts
+│       ├── admin.guard.ts
+│       └── non-admin.guard.ts
+├── polls/                  # Polls module
+│   ├── poll.controller.ts
+│   ├── poll.service.ts
+│   ├── polls.module.ts
+│   ├── poll.entity.ts
+│   └── poll.dto.ts
+├── poll-options/           # Poll options module
+│   ├── poll-options.controller.ts
+│   ├── poll-options.service.ts
+│   ├── poll-options.module.ts
+│   └── poll-option.entity.ts
+├── votes/                  # Votes module
+│   ├── vote.controller.ts
+│   ├── vote.service.ts
+│   ├── votes.module.ts
+│   ├── vote.entity.ts
+│   └── vote.dto.ts
+├── users/                  # Users module
+│   ├── users.controller.ts
+│   ├── users.service.ts
+│   ├── users.module.ts
+│   └── user.entity.ts
+├── config/                 # Configuration
+│   └── database.config.ts
+├── migrations/             # TypeORM database migrations
+├── seeds/                  # Database seeds
+│   └── admin.seed.ts
+├── app.controller.ts       # Root controller
+├── app.service.ts          # Root service
+├── app.module.ts           # Root module
+├── main.ts                 # Application entry point
+├── data-source.ts          # TypeORM data source configuration
+└── env.d.ts                # Environment type definitions
 ```
 
-## 🔌 API Endpoints
+##  API Endpoints
 
 ### Authentication (`/api/auth`)
 ```
@@ -83,7 +117,7 @@ GET    /poll/:pollId/results/by-state?state=STATE - Results by state
 GET    /user/:userId/poll/:pollId     - Check user's vote on poll
 ```
 
-## 🗄️ Database Setup
+##  Database Setup
 
 The backend automatically creates tables on startup using TypeORM synchronization. Ensure PostgreSQL is running:
 
@@ -92,17 +126,15 @@ The backend automatically creates tables on startup using TypeORM synchronizatio
 psql -U postgres -c "CREATE DATABASE poll_voting_db;"
 ```
 
-## 📦 Available Scripts
+##  Available Scripts
 
 ```bash
 npm run start        # Start production server
 npm run start:dev    # Start development server with watch
 npm run build        # Build for production
-npm run test         # Run tests
-npm run lint         # Run linter
 ```
 
-## 🔐 Authentication
+##  Authentication
 
 - **Method**: JWT (Bearer Token)
 - **Location**: Authorization header
@@ -114,7 +146,7 @@ Example request with auth:
 curl -H "Authorization: Bearer your_token_here" http://localhost:3000/api/auth/profile
 ```
 
-## 🛡️ Security Features
+##  Security Features
 
 - Password hashing with bcrypt (10 salt rounds)
 - JWT token-based authentication
@@ -123,15 +155,8 @@ curl -H "Authorization: Bearer your_token_here" http://localhost:3000/api/auth/p
 - CORS protection
 - SQL injection prevention via TypeORM
 
-## 🧪 Testing
 
-```bash
-npm run test         # Unit tests
-npm run test:e2e     # E2E tests
-npm run test:cov     # Coverage report
-```
-
-## 📖 Database Entities
+##  Database Entities
 
 ### User
 ```typescript
@@ -185,7 +210,7 @@ npm run test:cov     # Coverage report
 }
 ```
 
-## 🚨 Error Handling
+##  Error Handling
 
 The API returns standardized error responses:
 
@@ -197,7 +222,7 @@ The API returns standardized error responses:
 }
 ```
 
-## 📝 Environment Variables
+##  Environment Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -211,7 +236,7 @@ The API returns standardized error responses:
 | APP_PORT | Server port | 3000 |
 | FRONTEND_URL | Frontend URL for CORS | http://localhost:4200 |
 
-## 🔄 Data Flow
+##  Data Flow
 
 1. User registers/logs in → JWT token issued
 2. User includes token in requests → JWT guard validates
@@ -220,17 +245,17 @@ The API returns standardized error responses:
 5. Results requested → Aggregated vote counts returned
 6. Results filtered by state → State-specific counts returned
 
-## 🤝 Contributing
+##  Contributing
 
 1. Create feature branch: `git checkout -b feature/name`
 2. Make changes and commit: `git commit -am 'Add feature'`
 3. Push to branch: `git push origin feature/name`
 4. Submit pull request
 
-## 📧 Support
+##  Support
 
 For issues or questions, open an issue on the repository.
 
 ---
 
-**Built with NestJS & TypeORM** 🚀
+**Built with NestJS & TypeORM** 
