@@ -28,7 +28,9 @@ DATABASE_USER=postgres
 DATABASE_PASSWORD=your_password
 DATABASE_NAME=poll_voting_db
 JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRATION=3600
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=your_jwt_refresh_secret
+JWT_REFRESH_EXPIRES_IN=7d
 APP_PORT=3000
 FRONTEND_URL=http://localhost:4200
 ```
@@ -139,7 +141,7 @@ npm run build        # Build for production
 - **Method**: JWT (Bearer Token)
 - **Location**: Authorization header
 - **Format**: `Bearer <token>`
-- **Expiration**: Configurable via JWT_EXPIRATION
+- **Expiration**: Configurable via `JWT_EXPIRES_IN`
 
 Example request with auth:
 ```bash
@@ -232,7 +234,9 @@ The API returns standardized error responses:
 | DATABASE_PASSWORD | Database password | postgres |
 | DATABASE_NAME | Database name | poll_voting_db |
 | JWT_SECRET | Secret for signing tokens | change_in_production |
-| JWT_EXPIRATION | Token expiration (seconds) | 3600 |
+| JWT_EXPIRES_IN | Token expiration duration | 15m |
+| JWT_REFRESH_SECRET | Secret for refresh token signing | optional |
+| JWT_REFRESH_EXPIRES_IN | Refresh token expiration duration | 7d |
 | APP_PORT | Server port | 3000 |
 | FRONTEND_URL | Frontend URL for CORS | http://localhost:4200 |
 

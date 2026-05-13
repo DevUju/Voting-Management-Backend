@@ -12,7 +12,9 @@ import { AuthController } from "./auth.controller"; // 👈 ADD THIS
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || "secret",
-      signOptions: { expiresIn: "1h" },
+      signOptions: {
+        expiresIn: process.env.JWT_EXPIRES_IN || process.env.JWT_EXPIRATION || "1h",
+      },
     }),
     UsersModule,
   ],
