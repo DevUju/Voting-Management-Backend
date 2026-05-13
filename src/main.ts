@@ -27,10 +27,9 @@ async function seedAdminUser(app: any) {
         role: "admin",
       });
       await usersRepository.save(admin);
-      console.log("✅ Admin user created: admin@example.com / admin123");
     }
   } catch (error) {
-    console.log("ℹ️ Admin user already exists or seed skipped");
+    // Admin user already exists or seed skipped
   }
 }
 
@@ -54,17 +53,10 @@ async function bootstrap() {
 
   try {
     await app.listen(port);
-    console.log(`Poll & Voting Backend running on http://localhost:${port}`);
   } catch (error) {
     if ((error as any)?.code === "EADDRINUSE") {
       const fallbackPort = port + 1;
-      console.warn(
-        `Port ${port} is already in use. Trying port ${fallbackPort}...`,
-      );
       await app.listen(fallbackPort);
-      console.log(
-        `Poll & Voting Backend running on http://localhost:${fallbackPort}`,
-      );
     } else {
       throw error;
     }

@@ -18,11 +18,8 @@ async function seed() {
     const existingAdmin = await usersRepository.findOne({ where: { email: adminEmail } });
 
     if (existingAdmin) {
-      console.log('ℹ️  Admin user already exists:', adminEmail);
-      console.log('   Email:', existingAdmin.email);
-      console.log('   Role:', existingAdmin.role);
     } else {
-      // Create new admin user
+
       const hashedPassword = await bcrypt.hash(adminPassword, 10);
       const admin = usersRepository.create({
         name: adminName,
@@ -33,13 +30,6 @@ async function seed() {
       });
 
       await usersRepository.save(admin);
-      console.log('✅ Admin user created successfully!');
-      console.log('   Email:', adminEmail);
-      console.log('   Password:', adminPassword);
-      console.log('   Name:', adminName);
-      console.log('   State:', adminState);
-      console.log('   Role:', 'admin');
-      console.log('\n📝 Use these credentials to login at http://localhost:4200/login');
     }
   } catch (error) {
     console.error('❌ Error creating admin user:', error);
