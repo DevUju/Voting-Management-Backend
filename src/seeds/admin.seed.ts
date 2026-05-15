@@ -3,6 +3,9 @@ import { AppModule } from '../app.module';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function seed() {
   const app = await NestFactory.create(AppModule);
@@ -10,10 +13,10 @@ async function seed() {
   try {
     const usersRepository = app.get('UserRepository') as Repository<User>;
 
-    const adminEmail = 'admin@example.com';
-    const adminPassword = 'admin123';
-    const adminName = 'Admin User';
-    const adminState = 'Lagos';
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminName = process.env.ADMIN_NAME;
+    const adminState = process.env.ADMIN_STATE;
 
     const existingAdmin = await usersRepository.findOne({ where: { email: adminEmail } });
 

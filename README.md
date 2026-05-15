@@ -128,6 +128,34 @@ The backend automatically creates tables on startup using TypeORM synchronizatio
 psql -U postgres -c "CREATE DATABASE poll_voting_db;"
 ```
 
+##  Admin User Setup
+
+An admin user seed is provided to initialize the database with an administrator account.
+
+### Configure Admin Credentials
+
+Edit the admin credentials in your `.env` file:
+
+```env
+ADMIN_EMAIL=superadmin@yourdomain.com
+ADMIN_PASSWORD=SecureAdminPassword123!
+ADMIN_NAME=Super Administrator
+ADMIN_STATE=New York
+```
+
+### Run the Seed Script
+
+```bash
+npm run seed
+```
+
+This will create an admin user if one doesn't already exist. The admin will have:
+- Full permission to create, update, and delete polls
+- Access to admin-only endpoints
+- Ability to manage other users
+
+**Note**: Change the default admin password in production!
+
 ##  Available Scripts
 
 ```bash
@@ -239,6 +267,10 @@ The API returns standardized error responses:
 | JWT_REFRESH_EXPIRES_IN | Refresh token expiration duration | 7d |
 | APP_PORT | Server port | 3000 |
 | FRONTEND_URL | Frontend URL for CORS | http://localhost:4200 |
+| ADMIN_EMAIL | Admin user email | superadmin@yourdomain.com |
+| ADMIN_PASSWORD | Admin user password | SecureAdminPassword123! |
+| ADMIN_NAME | Admin user display name | Super Administrator |
+| ADMIN_STATE | Admin user state | New York |
 
 ##  Data Flow
 

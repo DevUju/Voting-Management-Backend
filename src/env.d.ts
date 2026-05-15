@@ -17,6 +17,10 @@ declare global {
       JWT_REFRESH_EXPIRES_IN?: string;
       APP_PORT: string;
       FRONTEND_URL?: string;
+      ADMIN_EMAIL: string;
+      ADMIN_PASSWORD: string;
+      ADMIN_NAME: string;
+      ADMIN_STATE: string;
     }
   }
 }
